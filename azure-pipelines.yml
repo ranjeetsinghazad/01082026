@@ -1,5 +1,4 @@
 trigger:
-- main
 - feature
 
 pool: Soonal_pool
