@@ -29,22 +29,6 @@ stages:
         backendAzureRmKey: 'ranjeet.tfstate'
 
 
-- stage: terraform_plan
-  jobs:
-  - job: terraform_plan
-    displayName: yaha pe terraform plan chalega
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        backendServiceArm: 'new_connection'
-        backendAzureRmResourceGroupName: 'rgs'
-        backendAzureRmStorageAccountName: 'ranjeetstg'
-        backendAzureRmContainerName: 'Containers'
-        backendAzureRmKey: 'ranjeet.tfstate'
-
 
     - task: TerraformTask@5
       inputs:
