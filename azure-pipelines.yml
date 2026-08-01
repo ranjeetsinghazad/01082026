@@ -38,6 +38,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         backendServiceArm: 'new_connection'
         backendAzureRmResourceGroupName: 'rgs'
         backendAzureRmStorageAccountName: 'ranjeetstg'
