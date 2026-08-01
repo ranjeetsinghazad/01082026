@@ -39,11 +39,11 @@ stages:
     displayName: Terraform Init
     steps:
 
-    # - task: TerraformTask@5
-    #   displayName: Terraform Init
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'init'
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
     #     workingDirectory: 'environment/dev'
     #     backendServiceArm: 'new_connection'
     #     backendAzureRmResourceGroupName: 'rgs'
