@@ -1,50 +1,61 @@
 trigger:
-- any
+- main
+- feature
 
-pool: Agent pools
+pool: Soonal_pool
+
 
 stages:
-- stage: Init_stage
+
+- stage: terraforminstall
+  displayName: Install Terraform
+  jobs:
+  - job: install
+    displayName: Install Terraform
+    steps:
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+
+- stage: Scanning_stage
+  displayName: Terraform Security Scan
+  dependsOn: terraforminstall
+  jobs:
+  - job: Tfsec
+    displayName: Run tfsec Scan
+    steps:
+    - script: |
+        tfsec .
+      displayName: tfsec Security Scan
+
+
+- stage: TerraformInit
+  displayName: Terraform Init and Plan
+  dependsOn: Scanning_stage
+
   jobs:
   - job: TerraformInit
-    displayName: to bhai yaha pe init chalega
-    # steps:
+    displayName: Terraform Init
+    steps:
+
     # - task: TerraformTask@5
+    #   displayName: Terraform Init
     #   inputs:
     #     provider: 'azurerm'
     #     command: 'init'
-    #     backendServiceArm: 'newasr'
-    #     backendAzureRmResourceGroupName: 'for-backend'
-    #     backendAzureRmStorageAccountName: 'pipelinekeliye'
-    #     backendAzureRmContainerName: 'pipestorage'
+    #     workingDirectory: 'environment/dev'
+    #     backendServiceArm: 'new_connection'
+    #     backendAzureRmResourceGroupName: 'rgs'
+    #     backendAzureRmStorageAccountName: 'ranjeetstg'
+    #     backendAzureRmContainerName: 'Containers'
     #     backendAzureRmKey: 'dev12.state'
 
-- stage: Scanning_stage
-  jobs:
-  - job: Tfsec
-    displayName: to bhai yaha pe scan hoga
-    steps:
-    - task: tfsec@1
-      inputs:
-        version: 'v1.26.0'
 
-- stage: TerraformInit
-  jobs:
-  - job: TerraformpInit
-    displayName: to bhai yaha pe Init chalega
-    steps:
     - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        backendServiceArm: 'newasr'
-        backendAzureRmResourceGroupName: 'for-backend'
-        backendAzureRmStorageAccountName: 'pipelinekeliye'
-        backendAzureRmContainerName: 'pipestorage'
-        backendAzureRmKey: 'dev12.state'
-    
-    - task: TerraformTask@5
+      displayName: Terraform Plan
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        environmentServiceNameAzureRM: 'newasr'
+        workingDirectory: 'environment/dev'
+        environmentServiceNameAzureRM: 'new_connection'
