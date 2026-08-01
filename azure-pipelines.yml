@@ -44,12 +44,12 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-    #     workingDirectory: 'environment/dev'
-    #     backendServiceArm: 'new_connection'
-    #     backendAzureRmResourceGroupName: 'rgs'
-    #     backendAzureRmStorageAccountName: 'ranjeetstg'
-    #     backendAzureRmContainerName: 'Containers'
-    #     backendAzureRmKey: 'dev12.state'
+        workingDirectory: 'environment/dev'
+        backendServiceArm: 'new_connection'
+        backendAzureRmResourceGroupName: 'rgs'
+        backendAzureRmStorageAccountName: 'ranjeetstg'
+        backendAzureRmContainerName: 'Containers'
+        backendAzureRmKey: 'dev12.state'
 
 
     - task: TerraformTask@5
