@@ -3,12 +3,12 @@ trigger:
 
 pool: Soonal_pool
 variables: 
-  workdirectory_path: '$(System.DefaultWorkingDirectory)/envoronmrnt/dev'
+  workingDirectory_path: '$(System.DefaultWorkingDirectory)/environment/dev'
 
 stages:
   - stage: terraform_install
     jobs: 
-     - job: 
+     - job: install
        steps: 
         - task: TerraformInstaller@1
           inputs:
@@ -16,14 +16,13 @@ stages:
 
   - stage: terraform_init
     jobs: 
-     - job: 
+     - job: terraform_init
        steps: 
        - task: TerraformTask@5
          inputs:
            provider: 'azurerm'
-           displayName: init
            command: 'init'
-           workingDirectory: $(workdirectory_path)
+           workingDirectory: $(workingDirectory_path)
            backendServiceArm: 'new_connection'
            backendAzureRmResourceGroupName: 'rgs'
            backendAzureRmStorageAccountName: 'ranjeetstgs123'
@@ -32,14 +31,13 @@ stages:
 
   - stage: terraform_plan
     jobs: 
-     - job: 
+     - job: terraform_plan
        steps:
        - task: TerraformTask@5
          inputs:
            provider: 'azurerm'
-           displayName: init
            command: 'init'
-           workingDirectory: $(workdirectory_path)
+           workingDirectory: $(workingDirectory_path)
            backendServiceArm: 'new_connection'
            backendAzureRmResourceGroupName: 'rgs'
            backendAzureRmStorageAccountName: 'ranjeetstgs123'
@@ -49,5 +47,5 @@ stages:
          inputs:
            provider: 'azurerm'
            command: 'plan'
-           workingDirectory: '$(workdirectory_path)'
+           workingDirectory: $(workingDirectory_path)
            environmentServiceNameAzureRM: 'new_connection'
