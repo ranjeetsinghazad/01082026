@@ -4,6 +4,7 @@ trigger:
 pool: Soonal_pool
 variables: 
   workingDirectory_path: '$(System.DefaultWorkingDirectory)/environment/dev'
+  service_connection: 'new_connection'
 
 stages:
   - stage: terraform_install
@@ -23,7 +24,7 @@ stages:
            provider: 'azurerm'
            command: 'init'
            workingDirectory: $(workingDirectory_path)
-           backendServiceArm: 'new_connection'
+           backendServiceArm: $(service_connection)
            backendAzureRmResourceGroupName: 'rgs'
            backendAzureRmStorageAccountName: 'ranjeetstgs123'
            backendAzureRmContainerName: 'rcontainer'
@@ -38,7 +39,7 @@ stages:
            provider: 'azurerm'
            command: 'init'
            workingDirectory: $(workingDirectory_path)
-           backendServiceArm: 'new_connection'
+           backendServiceArm: $(service_connection)
            backendAzureRmResourceGroupName: 'rgs'
            backendAzureRmStorageAccountName: 'ranjeetstgs123'
            backendAzureRmContainerName: 'rcontainer'
@@ -48,4 +49,4 @@ stages:
            provider: 'azurerm'
            command: 'plan'
            workingDirectory: $(workingDirectory_path)
-           environmentServiceNameAzureRM: 'new_connection'
+           environmentServiceNameAzureRM: $(service_connection)
