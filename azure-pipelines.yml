@@ -51,3 +51,15 @@ stages:
            command: 'plan'
            workingDirectory: $(workingDirectory_path)
            environmentServiceNameAzureRM: $(service_connection)
+      #  - task: ManualValidation@1
+      #    inputs:
+      #      notifyUsers: 'ranjeetsinghazad11@gmail.com'
+      #      approvers: 'ranjeetsinghazad11@gmail.com'
+      #      instructions: 'please approve after plan'
+       - task: TerraformTask@5
+         inputs:
+           provider: 'azurerm'
+           command: 'apply'
+           workingDirectory: '$(workingDirectory_path)'
+           commandOptions: '-auto-approve'
+           environmentServiceNameAzureRM: $(service_connection)
