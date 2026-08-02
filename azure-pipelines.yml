@@ -5,39 +5,29 @@ pool: Soonal_pool
 
 
 stages:
-- stage: terraforminstall
-  jobs:
-  - job: install
-    displayName: yaha pe terrafom install chalega
-    steps:
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: 'latest'
-- stage: terraform_init
-  jobs:
-  - job: terraform_init
-    displayName: yaha pe terraform inti chalega
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        backendServiceArm: 'new_connection'
-        backendAzureRmResourceGroupName: 'rgs'
-        backendAzureRmStorageAccountName: 'ranjeetstg'
-        backendAzureRmContainerName: 'Containers'
-        backendAzureRmKey: 'ranjeet.tfstate'
+  - stage: terraform_install
+    jobs: 
+     - job: 
+       steps: 
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
 
-- stage: terraform_plan
-  jobs:
-  - job: terraform_plan
-    displayName: yaha pe terraform plan chalega
-      dependsOn:['terraform_init']
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        environmentServiceNameAzureRM: 'new_connection'
+  - stage: terraform_init
+    jobs: 
+     - job: 
+       steps: 
+       - task: TerraformTask@5
+         inputs:
+           provider: 'azurerm'
+           displayName: init
+           command: 'init'
+           workingDirectory: '$(System.DefaultWorkingDirectory)/envoronmrnt/dev'
+           backendServiceArm: 'new_connection'
+           backendAzureRmResourceGroupName: 'rgs'
+           backendAzureRmStorageAccountName: 'ranjeetstgs123'
+           backendAzureRmContainerName: 'rcontainer'
+           backendAzureRmKey: 'rs.tfstate'
+
+      
+       
