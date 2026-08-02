@@ -63,6 +63,16 @@ stages:
        - task: TerraformTask@5
          inputs:
            provider: 'azurerm'
+           command: 'init'
+           workingDirectory: $(workingDirectory_path)
+           backendServiceArm: $(service_connection)
+           backendAzureRmResourceGroupName: 'rgs'
+           backendAzureRmStorageAccountName: 'ranjeetstgs123'
+           backendAzureRmContainerName: 'rcontainer'
+           backendAzureRmKey: 'rs.tfstate'
+       - task: TerraformTask@5
+         inputs:
+           provider: 'azurerm'
            command: 'apply'
            workingDirectory: '$(workingDirectory_path)'
            commandOptions: '-auto-approve'
