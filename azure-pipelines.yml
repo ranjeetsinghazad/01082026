@@ -57,8 +57,10 @@ stages:
       #      approvers: 'ranjeetsinghazad11@gmail.com'
       #      instructions: 'please approve after plan'
   - stage: terraform_apply
+    dependsOn: terraform_plan
     jobs: 
      - job: terraform_apply
+
        steps:
        - task: TerraformTask@5
          inputs:
@@ -77,3 +79,7 @@ stages:
            workingDirectory: '$(workingDirectory_path)'
            commandOptions: '-auto-approve'
            environmentServiceNameAzureRM: $(service_connection)
+
+
+
+
