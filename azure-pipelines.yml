@@ -3,7 +3,9 @@ trigger:
 - feature/*
 
 pool: soonal_pool
-
+variables: 
+  source_workdirectory: $(System.DefaultWorkingDirectory)/environment/dev
+  service_connection: new_connection
 stages:
 - stage: Install
   jobs:
@@ -16,30 +18,25 @@ stages:
 
 
 
-- stage: init
+- stage: Init_Validate
   jobs: 
-   - job: Terraforminit
-     displayName: yaha pe terrafom init chalega
+   - job: Terraforminit_validate
+     displayName: Terraform Init and Validate
      steps:
      - task: TerraformTask@5
        inputs:
          provider: 'azurerm'
          command: 'init'
-         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-         backendServiceArm: 'new_connection'
+         workingDirectory: $(source_workdirectory)
+         backendServiceArm: $(service_connection)
          backendAzureRmStorageAccountName: 'ranjeetstgs123'
          backendAzureRmContainerName: 'rcontainer'
          backendAzureRmKey: 'rs.tfstate'
-- stage: Validate
-  jobs:
-  - job: ValidateTerraform
-    displayName: yaha pe validate command chalega 
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+     - task: TerraformTask@5
+       inputs:
+         provider: 'azurerm'
+         command: 'validate'
+         workingDirectory: $(source_workdirectory)
 
 - stage: plan
   jobs: 
@@ -51,7 +48,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(source_workdirectory)
         backendServiceArm: 'new_connection'
         backendAzureRmStorageAccountName: 'ranjeetstgs123'
         backendAzureRmContainerName: 'rcontainer'
@@ -60,5 +57,5 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        environmentServiceNameAzureRM: 'new_connection'
+        workingDirectory: $(source_workdirectory)
+        environmentServiceNameAzureRM: $(service_connection)
