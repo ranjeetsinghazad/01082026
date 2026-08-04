@@ -33,7 +33,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: $(workingDirectory)'
+        workingDirectory: '$(workingDirectory)'
 - stage:
   jobs:
   - job:
