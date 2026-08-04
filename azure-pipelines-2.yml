@@ -1,0 +1,56 @@
+trigger: 
+- main
+- feature/*
+
+pool: soonal_pool
+variables:  
+  workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+  service_connection: 'new_connection'
+stages: 
+- stage:
+  jobs:
+  - job: 
+    steps: 
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+- stage: 
+  jobs:
+  - job:
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(workingDirectory)'
+        backendServiceArm: '$(service_connection)'
+        backendAzureRmResourceGroupName: 'rgs'
+        backendAzureRmStorageAccountName: 'ranjeetstgs123'
+        backendAzureRmContainerName: 'rcontainer'
+        backendAzureRmKey: 'rs.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: $(workingDirectory)'
+- stage:
+  jobs:
+  - job:
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(workingDirectory)'
+        backendServiceArm: 'new_connection'
+        backendAzureRmResourceGroupName: 'rgs'
+        backendAzureRmStorageAccountName: 'ranjeetstgs123'
+        backendAzureRmContainerName: 'rcontainer'
+        backendAzureRmKey: 'rs.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(workingDirectory)'
+        environmentServiceNameAzureRM: '$(service_connection)'
