@@ -5,130 +5,104 @@ trigger:
 pool: soonal_pool
 
 variables: 
-  source_workdirectory: $(System.DefaultWorkingDirectory)/environment/dev
+  source_workdirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
   service_connection: new_connection
 
-
-jobs:
-- job: terraformInitPlan
-  displayName: terraform init and plan job
-  pool: soonal_pool
-  steps: 
-  - task: TerraformInstaller@1
-    inputs:
-      terraformVersion: 'latest'
-  - task: TerraformTask@5
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(source_workdirectory)'
-      backendServiceArm: 'new_connection'
-      backendAzureRmStorageAccountName: 'ranjeetstgs123'
-      backendAzureRmContainerName: 'rcontainer'
-      backendAzureRmKey: 'rs.tfstate'
-  - task: TerraformTask@5
-    inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      workingDirectory: '$(source_workdirectory)'
-      environmentServiceNameAzureRM: '$(service_connection)'
-- job: ManualValidation
-  displayName: Manual validation kar do please
-  dependsOn: terraformInitPlan
-  pool: server
-  steps: 
-  - task: ManualValidation@1
-    inputs:
-      notifyUsers: 'ranjeetsinghazad11@gmail.com'
-      approvers: 'ranjeetsinghazad11@gmail.com'
-      instructions: 'kindly approve'
-
-- job: terraformApply
-  displayName: Terraform apply wala job
-  dependsOn: ManualValidation
-  pool: soonal_pool
-  steps: 
-  - task: TerraformTask@5
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(source_workdirectory)'
-      backendServiceArm: 'new_connection'
-      backendAzureRmStorageAccountName: 'ranjeetstgs123'
-      backendAzureRmContainerName: 'rcontainer'
-      backendAzureRmKey: 'rs.tfstate'
-  - task: TerraformTask@5
-    inputs:
-      provider: 'azurerm'
-      command: 'apply'
-      workingDirectory: '$(source_workdirectory)'
-      commandOptions: '-auto-approve'
-      environmentServiceNameAzureRM: $(service_connection)
+# parameters:
+# - name: string # Required as first property.
+#   displayName: string # Human-readable name for the parameter.
+#   type: string
+#   default: string | parameters | [ parameters ] # Default value; if no default, then the parameter MUST be given by the user at runtime.
+#   values: [ string ] # Allowed list of values (for some data types).
 
 
+stages: 
+- stage: install
+  jobs:
+  - job: teraformInstsll
+    steps: 
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+- stage: scanning
+  jobs:
+  - job: teraform_tfsec_scanning
+    displayName: terraform scanning 
+    steps:
+    - task: tfsec@1
+      inputs:
+        version: 'v1.26.0'
+
+- stage: init
+  jobs:
+  - job: teraformInit
+    displayName: terraform init 
+    steps: 
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(source_workdirectory)'
+        backendServiceArm: '$(service_connection)'
+        backendAzureRmStorageAccountName: 'ranjeetstgs123'
+        backendAzureRmContainerName: 'rcontainer'
+        backendAzureRmKey: 'rs.tfstate'
+
+- stage: init_plan
+  jobs:
+  - job: teraform_init_plan
+    displayName: terraform init and plan 
+    steps: 
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(source_workdirectory)'
+        backendServiceArm: '$(service_connection)'
+        backendAzureRmStorageAccountName: 'ranjeetstgs123'
+        backendAzureRmContainerName: 'rcontainer'
+        backendAzureRmKey: 'rs.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(source_workdirectory)'
+        environmentServiceNameAzureRM: '$(service_connection)'
+
+- stage: ManualValidation
+  dependsOn: init_plan
+  jobs:
+  - job: teraform_ManualValidation
+    displayName: terraform ManualValidation
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'ranjeetsinghazad11@gmail.com'
+        approvers: 'ranjeetsinghazad11@gmail.com'
+        instructions: 'kindly approved if found ok'
 
 
+- stage: init_apply
+  jobs:
+  - job: teraform_init_apply
+    displayName: terraform init and apply 
+    steps: 
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(source_workdirectory)'
+        backendServiceArm: '$(service_connection)'
+        backendAzureRmStorageAccountName: 'ranjeetstgs123'
+        backendAzureRmContainerName: 'rcontainer'
+        backendAzureRmKey: 'rs.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(source_workdirectory)'
+        commandOptions: '-auto-approved'
+        environmentServiceNameAzureRM: '$(service_connection)'
 
-
-
-
-
-
-
-# pool: soonal_pool
-# variables: 
-#   source_workdirectory: $(System.DefaultWorkingDirectory)/environment/dev
-#   service_connection: new_connection
-# stages:
-# - stage: Install
-#   jobs:
-#     - job: InstallTerraform
-#       displayName: yaha pe terraform install hoga
-#       steps:
-#       - task: TerraformInstaller@1
-#         inputs:
-#           terraformVersion: 'latest'
-
-
-
-# - stage: Init_Validate
-#   jobs: 
-#    - job: Terraforminit_validate
-#      displayName: Terraform Init and Validate
-#      steps:
-#      - task: TerraformTask@5
-#        inputs:
-#          provider: 'azurerm'
-#          command: 'init'
-#          workingDirectory: $(source_workdirectory)
-#          backendServiceArm: $(service_connection)
-#          backendAzureRmStorageAccountName: 'ranjeetstgs123'
-#          backendAzureRmContainerName: 'rcontainer'
-#          backendAzureRmKey: 'rs.tfstate'
-#      - task: TerraformTask@5
-#        inputs:
-#          provider: 'azurerm'
-#          command: 'validate'
-#          workingDirectory: $(source_workdirectory)
-
-# - stage: plan
-#   jobs: 
-#   - job: terraformplan
-#     displayName: yaha terraformplan chalega
-
-#     steps: 
-#     - task: TerraformTask@5
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'init'
-#         workingDirectory: $(source_workdirectory)
-#         backendServiceArm: 'new_connection'
-#         backendAzureRmStorageAccountName: 'ranjeetstgs123'
-#         backendAzureRmContainerName: 'rcontainer'
-#         backendAzureRmKey: 'rs.tfstate'
-#     - task: TerraformTask@5
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'plan'
-#         workingDirectory: $(source_workdirectory)
-#         environmentServiceNameAzureRM: $(service_connection)
