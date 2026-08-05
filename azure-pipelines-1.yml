@@ -9,7 +9,7 @@ variables:
   service_connection: new_connection
 
 # parameters:
-# - name: string # Required as first property.
+# - name: 
 #   displayName: string # Human-readable name for the parameter.
 #   type: string
 #   default: string | parameters | [ parameters ] # Default value; if no default, then the parameter MUST be given by the user at runtime.
@@ -85,8 +85,10 @@ stages:
 
 
 - stage: init_apply
+  dependsOn: init_plan
   jobs:
   - job: teraform_init_apply
+    condition: succeeded()
     displayName: terraform init and apply 
     steps: 
     - task: TerraformTask@5
