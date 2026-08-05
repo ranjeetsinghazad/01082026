@@ -3,9 +3,11 @@ trigger:
 - feature/*
 
 pool: soonal_pool
-variables:  
-  workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-  service_connection: 'new_connection'
+variables:
+- group: 'New variable group 05-Aug' 
+- name: workingDirectory
+  value: '$(System.DefaultWorkingDirectory)/environment/dev'
+
 stages: 
 - stage:
   jobs:
