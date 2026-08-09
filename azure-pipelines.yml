@@ -71,5 +71,6 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         commandOptions: '-auto-approve'
         environmentServiceNameAzureRM: 'new_connection'
