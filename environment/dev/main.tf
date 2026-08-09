@@ -1,7 +1,8 @@
 module "rg" {
     source = "../../module/1.resource_group"
     rgs = var.rgs
-  
+
+
 }
 
 module "vnets" {
