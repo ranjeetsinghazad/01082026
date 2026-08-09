@@ -5,7 +5,7 @@ parameters:
 - name: new_parameter
   displayName: parameter_add
   type: string
-  default: true
+  default: false
   values:
     - true
     - false
@@ -29,7 +29,6 @@ stages:
 - stage: plan_stage
   jobs:
   - job: init_plan
-    condition: eq('${{ parameters.new_parameter }}', 'true')
     displayName: plan
     
     steps:
@@ -50,9 +49,10 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         environmentServiceNameAzureRM: 'new_connection'
 
-- stage: 
+- stage: init_apply
   jobs:
   - job: init_apply
+    condition: eq('${{ parameters.new_parameter }}', 'true')
 
     steps:
     - task: TerraformTask@5
