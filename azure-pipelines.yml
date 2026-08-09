@@ -1,4 +1,6 @@
-trigger: none
+trigger: 
+ - main
+ - features/*
 pool: soonal_pool
 
 parameters: 
@@ -53,7 +55,6 @@ stages:
   jobs:
   - job: init_apply
     condition: eq('${{ parameters.new_parameter }}', 'true')
-
     steps:
     - task: TerraformTask@5
       inputs:
